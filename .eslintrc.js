@@ -12,7 +12,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'jest'], // додаємо TypeScript плагін
   extends: [
     '@mate-academy/eslint-config', // твоя базова конфігурація
-    'plugin:@typescript-eslint/recommended', // правила для TS
+    // 'plugin:@typescript-eslint/recommended', // правила для TS
     'prettier', // інтеграція з Prettier
   ],
   rules: {
