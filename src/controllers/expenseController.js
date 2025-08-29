@@ -31,13 +31,13 @@ const getByIdController = (req, res) => {
 const createController = (req, res) => {
   const { title, userId, spentAt, amount, category, note } = req.body;
 
-  if (!title || !userId || !spentAt || !amount || !category) {
-    return res.status(400).json({ message: 'Required field missing' });
-  }
-
   const user = userService.getById(Number(userId));
 
   if (!user) return res.status(400).json({ message: 'User not found' });
+
+  if (!title || !userId || !spentAt || !amount || !category) {
+    return res.status(400).json({ message: 'Required field missing' });
+  }
 
   const expense = expensesService.create(
     title,
