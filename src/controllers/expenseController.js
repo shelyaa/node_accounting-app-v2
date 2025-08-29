@@ -14,6 +14,11 @@ const getAllController = (req, res) => {
 };
 
 const getByIdController = (req, res) => {
+  if (!req.params.id)
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+
   const expense = expensesService.getById(Number(req.params.id));
 
   if (!expense) return res.status(404).json({ message: 'Expense not found' });
@@ -46,7 +51,7 @@ const createController = (req, res) => {
 const deleteOneController = (req, res) => {
   const deleted = expensesService.deleteById(Number(req.params.id));
 
-  if (!deleted) return res.sendStatus(404);
+  if (!deleted) return res.status(404).json({ message: 'Not found' });
   res.sendStatus(204);
 };
 
@@ -54,7 +59,7 @@ const updateController = (req, res) => {
   const { title, userId, spentAt, amount, category, note } = req.body;
   const expense = expensesService.getById(Number(req.params.id));
 
-  if (!expense) return res.sendStatus(404);
+  if (!expense) return res.status(404).json({ message: 'Not found' });
 
   let numericUserId;
 

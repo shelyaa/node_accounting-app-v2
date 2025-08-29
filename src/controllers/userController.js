@@ -9,6 +9,12 @@ const getAllController = (req, res) => {
 
 const getByIdController = (req, res) => {
   const id = Number(req.params.id);
+
+  if (!id)
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+
   const user = userService.getById(id);
 
   if (!user) return res.status(404).json({ error: 'User not found' });
@@ -26,14 +32,26 @@ const createController = (req, res) => {
 };
 
 const deleteOneController = (req, res) => {
-  const deleted = userService.deleteById(Number(req.params.id));
+  const id = Number(req.params.id);
+
+  if (!id) return res.sendStatus(400);
+
+  const deleted = userService.deleteById(id);
 
   if (!deleted) return res.status(404).json({ message: 'User not found' });
   res.sendStatus(204);
 };
 
 const updateController = (req, res) => {
+  if (!req.params.id)
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+
   const { name } = req.body;
+
+  if (!name) return res.sendStatus(400);
+
   const user = userService.getById(Number(req.params.id));
 
   if (!user) return res.status(404).json({ message: 'User not found' });
