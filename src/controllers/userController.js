@@ -10,14 +10,15 @@ const getAllController = (req, res) => {
 const getByIdController = (req, res) => {
   const id = Number(req.params.id);
 
-  if (!id)
+  if (!req.params.id || Number.isNaN(id)) {
     return res.status(400).json({
       message: 'The required path parameter id is missing or invalid',
     });
+  }
 
   const user = userService.getById(id);
 
-  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (!user) return res.status(404).json({ message: 'User not found' });
   res.json(user);
 };
 
@@ -34,7 +35,11 @@ const createController = (req, res) => {
 const deleteOneController = (req, res) => {
   const id = Number(req.params.id);
 
-  if (!id) return res.sendStatus(400);
+  if (!req.params.id || Number.isNaN(id)) {
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+  }
 
   const deleted = userService.deleteById(id);
 
@@ -43,14 +48,17 @@ const deleteOneController = (req, res) => {
 };
 
 const updateController = (req, res) => {
-  if (!req.params.id)
+  const id = Number(req.params.id);
+
+  if (!req.params.id || Number.isNaN(id)) {
     return res.status(400).json({
       message: 'The required path parameter id is missing or invalid',
     });
+  }
 
   const { name } = req.body;
 
-  if (!name) return res.sendStatus(400);
+  if (!name) return res.status(400).json({ message: 'Required field missing' });
 
   const user = userService.getById(Number(req.params.id));
 

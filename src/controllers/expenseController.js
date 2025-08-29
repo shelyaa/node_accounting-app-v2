@@ -14,12 +14,15 @@ const getAllController = (req, res) => {
 };
 
 const getByIdController = (req, res) => {
-  if (!req.params.id)
+  const id = Number(req.params.id);
+
+  if (!req.params.id || Number.isNaN(id)) {
     return res.status(400).json({
       message: 'The required path parameter id is missing or invalid',
     });
+  }
 
-  const expense = expensesService.getById(Number(req.params.id));
+  const expense = expensesService.getById(id);
 
   if (!expense) return res.status(404).json({ message: 'Expense not found' });
   res.json(expense);
@@ -28,7 +31,7 @@ const getByIdController = (req, res) => {
 const createController = (req, res) => {
   const { title, userId, spentAt, amount, category, note } = req.body;
 
-  if (!title || !userId || !spentAt || !amount || !category || !note) {
+  if (!title || !userId || !spentAt || !amount || !category) {
     return res.status(400).json({ message: 'Required field missing' });
   }
 
@@ -49,17 +52,40 @@ const createController = (req, res) => {
 };
 
 const deleteOneController = (req, res) => {
-  const deleted = expensesService.deleteById(Number(req.params.id));
+  const id = Number(req.params.id);
 
-  if (!deleted) return res.status(404).json({ message: 'Not found' });
+  if (!req.params.id || Number.isNaN(id)) {
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+  }
+
+  const deleted = expensesService.deleteById(id);
+
+  if (!deleted) return res.status(404).json({ message: 'Expense not found' });
   res.sendStatus(204);
 };
 
 const updateController = (req, res) => {
-  const { title, userId, spentAt, amount, category, note } = req.body;
-  const expense = expensesService.getById(Number(req.params.id));
+  const id = Number(req.params.id);
 
-  if (!expense) return res.status(404).json({ message: 'Not found' });
+  if (!req.params.id || Number.isNaN(id)) {
+    return res.status(400).json({
+      message: 'The required path parameter id is missing or invalid',
+    });
+  }
+
+  const { title, userId, spentAt, amount, category, note } = req.body;
+
+  if (!title && !userId && !spentAt && !amount && !category && !note) {
+    return res
+      .status(400)
+      .json({ message: 'At least one updatable field must be provided' });
+  }
+
+  const expense = expensesService.getById(id);
+
+  if (!expense) return res.status(404).json({ message: 'Expense not found' });
 
   let numericUserId;
 
