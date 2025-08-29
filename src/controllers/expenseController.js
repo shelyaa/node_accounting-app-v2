@@ -75,6 +75,10 @@ const updateController = (req, res) => {
     });
   }
 
+  const expense = expensesService.getById(id);
+
+  if (!expense) return res.status(404).json({ message: 'Expense not found' });
+
   const { title, userId, spentAt, amount, category, note } = req.body;
 
   if (!title && !userId && !spentAt && !amount && !category && !note) {
@@ -82,10 +86,6 @@ const updateController = (req, res) => {
       .status(400)
       .json({ message: 'At least one updatable field must be provided' });
   }
-
-  const expense = expensesService.getById(id);
-
-  if (!expense) return res.status(404).json({ message: 'Expense not found' });
 
   let numericUserId;
 
